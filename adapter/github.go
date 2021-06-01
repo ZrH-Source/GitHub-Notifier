@@ -8,10 +8,9 @@ import (
 )
 
 func GitHandler(w http.ResponseWriter, r *http.Request) {
+
 	hook, _ := github.New(github.Options.Secret("Whatever"))
 	payload, err := hook.Parse(r, github.PushEvent)
-
-	fmt.Println(payload)
 
 	if err != nil {
 		if err == github.ErrEventNotFound {
