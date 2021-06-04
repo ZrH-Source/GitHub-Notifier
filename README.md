@@ -2,4 +2,4 @@
 GitHub Notifier source
 
 
-This project will work with a web server, using Goland, and will permit to pull automatically
+This project will work with a web server, using Golang, and will permit to pull automatically.
