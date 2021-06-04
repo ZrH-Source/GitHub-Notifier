@@ -16,10 +16,8 @@ type GitInfo struct {
 }
 
 func GitHandler(w http.ResponseWriter, r *http.Request) {
-
 	hook, _ := github.New(github.Options.Secret("Whatever"))
 	payload, err := hook.Parse(r, github.PushEvent)
-
 	if err != nil {
 		if err == github.ErrEventNotFound {
 			// ok event wasn;t one of the ones asked to be parsed
