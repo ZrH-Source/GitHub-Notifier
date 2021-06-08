@@ -33,6 +33,7 @@ func GitHandler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println(infos)
 		PullPayload()
+
 	}
 
 }
