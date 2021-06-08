@@ -8,7 +8,7 @@ import (
 	"github.com/go-playground/webhooks/v6/github"
 )
 
-type gitInfo struct {
+type GitInfo struct {
 	author     string
 	repository string
 	email      string
@@ -29,8 +29,10 @@ func GitHandler(w http.ResponseWriter, r *http.Request) {
 		str := push.Repository.FullName
 		repository := strings.Split(str, "/")[1]
 
-		infos := gitInfo{author: push.Pusher.Name, repository: repository, email: push.Pusher.Email, hash: push.Commits[0].ID}
+		infos := GitInfo{author: push.Pusher.Name, repository: repository, email: push.Pusher.Email, hash: push.Commits[0].ID}
 
 		fmt.Println(infos)
+		PullPayload()
 	}
+
 }
