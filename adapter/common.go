@@ -18,7 +18,7 @@ func PullPayload() {
 		MaintainerCanModify: github.Bool(true),
 	}
 
-	pr, _, err := client.PullRequests.Create(context.Background(), "test", GitInfo[0].repository, newPR)
+	pr, _, err := client.PullRequests.Create(context.Background(), "ZrH-Source",  , newPR)
 	if err != nil {
 		fmt.Println(err)
 		return

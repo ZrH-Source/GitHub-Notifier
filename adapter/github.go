@@ -26,8 +26,8 @@ func GitHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if push, v := payload.(github.PushPayload); v {
-		str := push.Repository.FullName
-		repository := strings.Split(str, "/")[1]
+		repoName := push.Repository.FullName
+		repository := strings.Split(repoName, "/")[1]
 		infos := GitInfo{author: push.Pusher.Name, repository: repository, email: push.Pusher.Email, hash: push.Commits[0].ID}
 		fmt.Println(infos)
 		PullPayload()
