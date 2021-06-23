@@ -1,28 +1,30 @@
 package adapter
 
 import (
-	"context"
-	"fmt"
-
-	"github.com/google/go-github/github"
+	"os"
+	"os/exec"
 )
 
-func PullPayload() {
-	client := github.NewClient(nil)
+type GitInfo struct {
+	author     string
+	repository string
+	email      string
+	hash       string
+}
 
-	newPR := &github.NewPullRequest{
-		Title:               github.String("My awesome pull request"),
-		Head:                github.String("branch_to_merge"),
-		Base:                github.String("master"),
-		Body:                github.String("This is the description of the PR created with the package `github.com/google/go-github/github`"),
-		MaintainerCanModify: github.Bool(true),
+func (g *GitInfo) Update() {
+	if _, err := os.Stat(g.repository); err != nil {
+		path := g.repository
+		exec.Command("git pull https://github.com/" + path)
+		println("Pull success")
+	} else {
+		println(err)
+		g.Clone()
 	}
+}
 
-	pr, _, err := client.PullRequests.Create(context.Background(), "test", GitInfo[0].repository, newPR)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Printf("PR created: %s\n", pr.GetHTMLURL())
+func (g *GitInfo) Clone() {
+	path := g.repository
+	exec.Command("git clone https://github.com/" + path)
+	println("Clone success")
 }

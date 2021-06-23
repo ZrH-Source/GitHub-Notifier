@@ -8,13 +8,6 @@ import (
 	"github.com/go-playground/webhooks/v6/github"
 )
 
-type GitInfo struct {
-	author     string
-	repository string
-	email      string
-	hash       string
-}
-
 func GitHandler(w http.ResponseWriter, r *http.Request) {
 	hook, _ := github.New(github.Options.Secret("Whatever"))
 	payload, err := hook.Parse(r, github.PushEvent)
@@ -26,14 +19,11 @@ func GitHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if push, v := payload.(github.PushPayload); v {
-		str := push.Repository.FullName
-		repository := strings.Split(str, "/")[1]
-
+		repoName := push.Repository.FullName
+		repository := strings.Split(repoName, "/")[1]
 		infos := GitInfo{author: push.Pusher.Name, repository: repository, email: push.Pusher.Email, hash: push.Commits[0].ID}
-
 		fmt.Println(infos)
-		PullPayload()
-
+		infos.Update()
 	}
 
 }
