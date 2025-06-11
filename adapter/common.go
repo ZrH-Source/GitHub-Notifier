@@ -1,8 +1,11 @@
 package adapter
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 type GitInfo struct {
@@ -12,19 +15,37 @@ type GitInfo struct {
 	hash       string
 }
 
-func (g *GitInfo) Update() {
-	if _, err := os.Stat(g.repository); err != nil {
-		path := g.repository
-		exec.Command("git pull https://github.com/" + path)
-		println("Pull success")
+func (g *GitInfo) Update() error {
+	repoPath := filepath.Join(".", g.repository)
+	
+	if _, err := os.Stat(repoPath); err == nil {
+		// Le repository existe, on fait un pull
+		cmd := exec.Command("git", "-C", repoPath, "pull")
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			log.Printf("Erreur lors du pull: %v\nOutput: %s", err, string(output))
+			return fmt.Errorf("erreur lors du pull: %v", err)
+		}
+		log.Printf("Pull réussi pour %s", g.repository)
+		return nil
 	} else {
-		println(err)
-		g.Clone()
+		// Le repository n'existe pas, on fait un clone
+		return g.Clone()
 	}
 }
 
-func (g *GitInfo) Clone() {
-	path := g.repository
-	exec.Command("git clone https://github.com/" + path)
-	println("Clone success")
+func (g *GitInfo) Clone() error {
+	repoPath := filepath.Join(".", g.repository)
+	repoURL := fmt.Sprintf("https://github.com/%s", g.repository)
+	
+	cmd := exec.Command("git", "clone", repoURL, repoPath)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("Erreur lors du clone: %v\nOutput: %s", err, string(output))
+		return fmt.Errorf("erreur lors du clone: %v", err)
+	}
+	
+	log.Printf("Clone réussi pour %s", g.repository)
+	return nil
 }
+
